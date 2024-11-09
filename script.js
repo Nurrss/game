@@ -33,7 +33,6 @@ function checkAnswer(selectedAnswer, correctAnswer) {
 
     if (hiddenCards.length === 1) {
       setTimeout(() => {
-        alert("Поздравляем! Переход на следующий уровень.");
         playLevelPassedSound(); // Воспроизводим звук "level passed"
         nextLevel();
       }, 500);
