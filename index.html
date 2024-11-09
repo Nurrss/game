@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Детская игра</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="game-container text-center border rounded p-3 shadow">
+      <div class="game-board">
+        <!-- Карточки 3x3, скрывающие изображение -->
+        <div class="card" onclick="revealCard(this)"></div>
+        <div class="card" onclick="revealCard(this)"></div>
+        <div class="card" onclick="revealCard(this)"></div>
+        <div class="card" onclick="revealCard(this)"></div>
+        <div class="card" onclick="revealCard(this)"></div>
+        <div class="card" onclick="revealCard(this)"></div>
+        <div class="card" onclick="revealCard(this)"></div>
+        <div class="card" onclick="revealCard(this)"></div>
+        <div class="card" onclick="revealCard(this)"></div>
+      </div>
+
+      <div class="question-section mt-4">
+        <p id="question" class="font-weight-bold">Вопрос:</p>
+        <div id="answer-options" class="d-flex justify-content-around"></div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <audio
+      id="background-music"
+      src="musics/backgroud.mp3"
+      autoplay
+      loop
+    ></audio>
+    <audio id="correct-sound" src="musics/correct.mp3"></audio>
+    <audio id="wrong-sound" src="musics/wrong.mp3"></audio>
+  </body>
+</html>
