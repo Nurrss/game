@@ -50,10 +50,6 @@ function checkAnswer(selectedAnswer, correctAnswer) {
   }
 }
 
-function revealCard(card) {
-  card.classList.add("hidden");
-}
-
 function generateQuestion() {
   let num1, num2, isAddition, correctAnswer, questionText;
 
