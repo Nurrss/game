@@ -1,5 +1,26 @@
 let currentImageIndex = 1;
 let totalImages = 15;
+let num1 = 1; // Начальное значение первого множителя
+let num2 = 1; // Начальное значение второго множителя
+
+// Массив с названиями и расширениями файлов
+const personFiles = [
+  "1.mpeg",
+  "2.aac",
+  "3.aac",
+  "4.aac",
+  "5.aac",
+  "6.mpeg",
+  "7.aac",
+  "8.aac",
+  "9.aac",
+  "10.aac",
+  "11.aac",
+  "12.aac",
+  "13.aac",
+  "14.aac",
+  "15.aac",
+];
 
 document.addEventListener(
   "click",
@@ -13,7 +34,6 @@ document.addEventListener(
 ); // Запуск музыки один раз при первом клике
 
 function checkAnswer(selectedAnswer, correctAnswer) {
-  const question = document.getElementById("question");
   const backgroundMusic = document.getElementById("background-music");
   const correctSound = document.getElementById("correct-sound");
   const wrongSound = document.getElementById("wrong-sound");
@@ -28,13 +48,12 @@ function checkAnswer(selectedAnswer, correctAnswer) {
 
     const hiddenCards = document.querySelectorAll(".card:not(.hidden)");
     if (hiddenCards.length > 0) {
-      hiddenCards[0].classList.add("hidden"); // Открываем следующую карточку
+      hiddenCards[0].classList.add("hidden"); // Убираем следующую карточку
     }
 
     if (hiddenCards.length === 1) {
       setTimeout(() => {
         playLevelPassedSound(); // Воспроизводим звук "level passed"
-        nextLevel();
       }, 500);
     } else {
       generateQuestion();
@@ -50,32 +69,22 @@ function checkAnswer(selectedAnswer, correctAnswer) {
 }
 
 function generateQuestion() {
-  let num1, num2, isAddition, correctAnswer, questionText;
-
-  // Генерируем вопрос до тех пор, пока результат вычитания не станет положительным
-  do {
-    num1 = Math.floor(Math.random() * 11);
-    num2 = Math.floor(Math.random() * 11);
-    isAddition = Math.random() > 0.5;
-
-    // Определяем текст вопроса и правильный ответ
-    if (isAddition) {
-      questionText = `${num1} + ${num2}`;
-      correctAnswer = num1 + num2;
-    } else {
-      // Проверка, чтобы результат не был отрицательным
-      if (num1 >= num2) {
-        questionText = `${num1} - ${num2}`;
-        correctAnswer = num1 - num2;
-      } else {
-        questionText = `${num2} - ${num1}`;
-        correctAnswer = num2 - num1;
-      }
-    }
-  } while (correctAnswer < 0); // Убедимся, что ответ не меньше 0
+  const questionText = `${num1} * ${num2}`;
+  const correctAnswer = num1 * num2;
 
   document.getElementById("question").textContent = `Вопрос: ${questionText}`;
   generateAnswerOptions(correctAnswer);
+
+  // Переход к следующему вопросу в порядке умножения
+  num2++;
+  if (num2 > 10) {
+    // После 1*10 -> 2*1, 2*2, ..., 10*10
+    num2 = 1;
+    num1++;
+    if (num1 > 10) {
+      num1 = 1; // Сбрасываем к началу после 10*10
+    }
+  }
 }
 
 function generateAnswerOptions(correctAnswer) {
@@ -83,7 +92,7 @@ function generateAnswerOptions(correctAnswer) {
   answerOptions.push(correctAnswer);
 
   while (answerOptions.length < 4) {
-    const wrongAnswer = Math.floor(Math.random() * 21) - 10;
+    const wrongAnswer = Math.floor(Math.random() * 101); // Ответы в диапазоне от 0 до 100
     if (!answerOptions.includes(wrongAnswer)) {
       answerOptions.push(wrongAnswer);
     }
@@ -111,18 +120,34 @@ function nextLevel() {
     return;
   }
 
-  // Обновляем фон и карточки
-  document.querySelector(
-    ".game-board"
-  ).style.backgroundImage = `url('images/person/${currentImageIndex}.jpeg')`;
+  const backgroundMusic = document.getElementById("background-music");
+  backgroundMusic.volume = 0.1; // Уменьшаем громкость фона для этапного звука
 
-  // Сбрасываем карточки для нового уровня
-  const cards = document.querySelectorAll(".card");
-  cards.forEach((card) => {
-    card.classList.remove("hidden");
-  });
+  // Воспроизводим звук текущего этапа
+  const stageSound = new Audio(
+    `musics/person/${personFiles[currentImageIndex - 2]}`
+  );
+  console.log(stageSound);
+  console.log(currentImageIndex - 2);
 
-  generateQuestion(); // Создаем новый вопрос для нового уровня
+  stageSound.play();
+
+  stageSound.onended = () => {
+    backgroundMusic.volume = 1; // Восстанавливаем громкость фоновой музыки
+
+    // После окончания звука этапа обновляем фон и карточки
+    document.querySelector(
+      ".game-board"
+    ).style.backgroundImage = `url('images/person/${currentImageIndex}.jpeg')`;
+
+    // Сбрасываем карточки для нового уровня
+    const cards = document.querySelectorAll(".card");
+    cards.forEach((card) => {
+      card.classList.remove("hidden");
+    });
+
+    generateQuestion(); // Создаем новый вопрос для нового уровня
+  };
 }
 
 function playLevelPassedSound() {
@@ -134,6 +159,7 @@ function playLevelPassedSound() {
 
   levelPassedSound.onended = () => {
     backgroundMusic.volume = 1; // Восстанавливаем громкость фоновой музыки после завершения звука
+    nextLevel(); // Переход на следующий уровень после завершения звука "level passed"
   };
 }
 
